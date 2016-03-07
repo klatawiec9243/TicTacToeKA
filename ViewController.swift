@@ -10,6 +10,7 @@ import UIKit
 
 class ViewController: UIViewController
 {
+
     @IBOutlet weak var one: UILabel!
     @IBOutlet weak var two: UILabel!
     @IBOutlet weak var three: UILabel!
@@ -20,13 +21,9 @@ class ViewController: UIViewController
     @IBOutlet weak var eight: UILabel!
     @IBOutlet weak var nine: UILabel!
     @IBOutlet weak var currentPlayerLabel: UILabel!
+    @IBOutlet weak var winner: UILabel!
     
-    var plays: [String:Int] = [
-        "X":5,
-        "O":1
-    ]
-    
-    var letters = "XOXOXOXOXOXOXOXOXO"
+    var letters = "XOXOXOXOXOXOXOXOX"
     var counter = 0
     var currentLetter: Character!
     var labelArray = [UILabel()]
@@ -36,6 +33,7 @@ class ViewController: UIViewController
         super.viewDidLoad()
         labelArray = [one, two, three, four, five, six, seven, eight, nine]
         getAndSetCurrentLetter()
+        
     }
     
     @IBAction func whenTapped(sender: UITapGestureRecognizer)
@@ -45,25 +43,65 @@ class ViewController: UIViewController
             if CGRectContainsPoint(label.frame, selectedPoint)
             {
                 label.text = String(currentLetter)
+                counter++
+                if counter == 9
+                {
+                    counter = resetGameWin()
+                }
             }
         }
-        counter++
-        if counter == 9
-        {
-            counter = resetGame()
-        }
         getAndSetCurrentLetter()
+        
+        if one.text == two.text && two.text == three.text && three.text != "" //left
+        {
+            winner.text = "1"
+            resetGameWin()
+        }
+        else if four.text == five.text && five.text == six.text && six.text != "" //middle down
+        {
+            winner.text = "2"
+            resetGameWin()
+        }
+        else if seven.text == eight.text && eight.text == nine.text && nine.text != "" //right
+        {
+            winner.text = "3"
+            resetGameWin()
+        }
+        else if one.text == four.text && four.text == seven.text && seven.text != "" //top
+        {
+            winner.text = "4"
+            resetGameWin()
+        }
+        else if two.text == five.text && five.text == eight.text && eight.text != "" //middle across
+        {
+            winner.text = "5"
+            resetGameWin()
+        }
+        else if three.text == six.text && six.text == nine.text && nine.text != "" //bottom
+        {
+            winner.text = "6"
+            resetGameWin()
+        }
+        else if seven.text == five.text && five.text == three.text && three.text != "" //diagonal left to right
+        {
+            winner.text = "7"
+            resetGameWin()
+        }
+        else if one.text == five.text && five.text == nine.text && nine.text != "" //diagonal right to left
+        {
+            winner.text = "8"
+            resetGameWin()
+        }
     }
-    
+
     func getAndSetCurrentLetter()
     {
         currentLetter = letters[letters.startIndex.advancedBy(counter)]
         currentPlayerLabel.text = String(currentLetter)
     }
-    
-    func resetGame() ->Int
+    func resetGameWin() ->Int
     {
-        let alert = UIAlertController(title: "Reseting Game", message: "To play again, tap OK", preferredStyle: .Alert)
+        let alert = UIAlertController(title: "Reseting Game", message: "\(winner.text)Winner! To play again, tap OK", preferredStyle: .Alert)
         let okAction = UIAlertAction(title: "OK", style: .Default, handler:
             {
                 sender in
@@ -76,13 +114,15 @@ class ViewController: UIViewController
                 self.seven.text = ""
                 self.eight.text = ""
                 self.nine.text = ""
+                self.winner.text = ""
+                self.counter = 0
+                self.currentLetter = "X"
         })
+        
+        
         alert.addAction(okAction)
         presentViewController(alert, animated: true, completion: nil)
         return 0
     }
     
-    func win()
-    {
-        
-    }
+}
